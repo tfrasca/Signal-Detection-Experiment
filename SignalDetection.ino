@@ -1,17 +1,9 @@
-#include "DHT.h"
-
-//#include <SeeedOLED.h>
-//#include <Wire.h>
-#include <U8x8lib.h>
 #include <Volume.h>
 
-#define DHTTYPE DHT11
-#define DHTPIN 3
 #define BUZZERPIN 5
 #define LEDPIN 4
 
 Volume vol;
-U8X8_SSD1306_128X64_ALT0_HW_I2C u8x8(U8X8_PIN_NONE);
 volatile boolean buttonPressed = false;
 volatile long lastPressed = 0;
 int volDown = -1;
@@ -20,26 +12,12 @@ int toneVal = 3000;
 
 int numTrials = 21;
 
-DHT dht(DHTPIN, DHTTYPE);
 void setup() {
   attachInterrupt(digitalPinToInterrupt(2), handleInterrupt, RISING);
   pinMode(LEDPIN,OUTPUT);
   vol.begin();
   Serial.begin(9600);
-  //Wire.begin();
-  //SeeedOled.init();
-  //SeeedOled.setNormalDisplay();
-  //SeeedOled.setPageMode();
-  //SeeedOled.clearDisplay();
-  //SeeedOled.setTextXY(0,0);
-  //SeeedOled.putString("hi");
-  //SeeedOled.setTextXY(5,5);
   pinMode(BUZZERPIN, OUTPUT);
-  dht.begin();
-  u8x8.begin();
-  u8x8.setFlipMode(1);
-  u8x8.setCursor(0,0);
-  u8x8.setFont(u8x8_font_chroma48medium8_r);
   randomSeed(analogRead(0)*analogRead(1)/2);
 }
 
@@ -69,12 +47,15 @@ void loop() {
 
 void runExperiment(int volume) {
   Serial.println("Awesome, now that the device is calibrated, let's get to the Experiment!!");
-  Serial.println("Press the button to start the experiment");
+  Serial.println("Instructions");
+  Serial.println("\tYou will complete 21 trials to detect the buzzer.");
+  Serial.println("\tFor each trial, A light will turn on and if you hear a beep from the buzzer hit the button.");
+  Serial.println("\tIf the buzzer does not go off, then do not hit the button.");
+  Serial.println("\tAt the end of the trial, the light will turn off.");
+  Serial.println("\tPress the button to begin, you will hear 5 beeps and then the experiment will commense.");
   waitForButton();
-  for (int i=5; i >= 0; i--) {
-    Serial.println(i);
-    vol.delay(1000);
-  }
+  beep(5,volume);
+  vol.delay(1500);
   for (int i=0; i < numTrials; i++) {
     //Serial.println(i);
     runTrial(volume);
@@ -131,7 +112,7 @@ void getVolDown() {
     Serial.println("Instructions:");
     Serial.println("\tOnce you start, you will hear 3 beeps and a buzzer will gradually lower in volume.");
     Serial.println("\tPress the button when you can no longer hear the buzzer.");
-    Serial.println("\tPress the button to begin");
+    Serial.println("\tPress the button to begin.");
     waitForButton();
     beep(3, 125);
     vol.delay(500);
@@ -153,7 +134,7 @@ void getVolUp() {
     Serial.println("Instructions:");
     Serial.println("\tOnce you start, you will hear 3 beeps and a buzzer will gradually increase in volume.");
     Serial.println("\tPress the button once you hear the buzzer.");
-    Serial.println("\tPress the button to begin");
+    Serial.println("\tPress the button to begin.");
     waitForButton();
     beep(3, 125);
     vol.delay(500);

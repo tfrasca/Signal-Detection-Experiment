@@ -13,13 +13,12 @@ try:
   print(line)
   while not line == "End Experiment":
     line = listener.readline().decode().strip("\n")
-    if "start the experiment" in line:
+    if "experiment will commense" in line:
       start_recording = True
-      count_down = True
     if len(line) > 5 or count_down:
       print(line)
     line = line.strip()
-    if start_recording and not count_down:
+    if start_recording:
       line = line.strip()
       if line == "h":
         hits +=1
