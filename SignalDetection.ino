@@ -22,6 +22,7 @@ void setup() {
 }
 
 void loop() {
+  randomSeed(analogRead(0)*analogRead(1)/2);
   Serial.println("Hello, thank you for participating in my experiment.");
   Serial.println("We will start by calibrating the buzzer volume.");
   Serial.println("Press the button to start calibration");
